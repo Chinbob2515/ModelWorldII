@@ -15,7 +15,7 @@ class ServerSocket():
 	def getClientObject(self):
 		return self.ServerSocketHandler(*self.getClient())
 	
-	def starThreadedFunctionWithClient(self, function):
+	def startThreadedFunctionWithClient(self, function):
 		pass
 	
 	class ServerSocketHandler():
