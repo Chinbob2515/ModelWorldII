@@ -27,19 +27,27 @@ class ServerSocket():
 			self.alive = True
 		
 		def sendLine(self, line):
-			if not "\n" in line: line += "\n"
+			if not line.endswith("\n"): line += "\n"
 			self.connection.sendall(line)
 		
 		def readLine(self):
 			while not "\n" in self.buffer:
 				self.buffer += self.connection.recv(64)
 			line = self.buffer.split("\n")[0]
-			self.buffer = ''.join(self.buffer.split("\n")[1:])
+			self.buffer = '\n'.join(self.buffer.split("\n")[1:])
+			self.tryExecOrder(line)
 			return line
 		
-		def kill(self):
-			self.connection.close()
-			self.alive = False
+		def tryExecOrder(self, line):
+			if "\k" in line:
+				self.close(response=1)
+		
+		def close(self, response=0):
+			if not response:
+				self.sendLine("\k")
+			else:
+				self.connection.close()
+				self.alive = False
 
 class ClientSocket():
 	
@@ -51,17 +59,23 @@ class ClientSocket():
 		self.alive = True
 	
 	def sendLine(self, line):
-		if not "\n" in line: line += "\n"
+		if not line.endswith("\n"): line += "\n"
 		self.sock.sendall(line)
 	
 	def readLine(self):
 		while not "\n" in self.buffer:
 			self.buffer += self.sock.recv(64)
 		line = self.buffer.split("\n")[0]
-		self.buffer = ''.join(self.buffer.split("\n")[1:])
+		self.buffer = '\n'.join(self.buffer.split("\n")[1:])
+		self.tryExecOrder(line)
 		return line
 	
-	def kill(self):
+	def tryExecOrder(self, line):
+		if "\k" in line:
+			self.close()
+	
+	def close(self):
+		self.sendLine("\k")
 		self.sock.close()
 		self.alive = False
 
