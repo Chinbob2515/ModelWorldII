@@ -1,0 +1,10 @@
+
+<tiles>
+	<tile name="dirt"  solid="1" />
+	<tile name="grass" solid="0" />
+	<tile name="sand"  solid="0" />
+	<tile name="stone" solid="1" />
+	<tile name="air"   solid="0" />
+	<tile name="tree"  solid="1" />
+	<tile name="opium" solid="0" />
+</tiles>
