@@ -40,6 +40,26 @@ else:
 			print "Your password (you don't get a choice), is:", messageRegister["param"][0]
 			verified = True
 
+print "The game starts here: please read manual.txt if you do not know what to type."
+
+RUNNING = True
+while RUNNING:
+	userInput = raw_input()
+	if userInput.startswith("\\"): # Game command
+		userInput = userInput.strip("\\").split(" ")
+		command = userInput[0]
+		if command == "switch":
+			print "Attempting to switch dwarf..."
+			message.send(20, 0, userInput[1:])
+		elif command == "exit":
+			print "Exiting..."
+			message.send(01, 0, [])
+			RUNNING = False
+	else: # User talking to active dwarf
+		message.send(21, 0, [userInput])
+		response = message.get()
+		print response["params"][0]
+
 print "The game ends here."
 
 socket.close()

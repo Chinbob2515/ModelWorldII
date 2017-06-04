@@ -1,7 +1,7 @@
 
 __path__ = '/'.join(__file__.split('/')[:-1]+[""]) # Who cares if the slash is wrong?
 
-import data.tiles, random
+import sim.data.tiles, random
 
 class TileType():
 	
@@ -49,12 +49,14 @@ class World():
 		self.world = [[[None for _ in xrange(height)] for _ in xrange(width)] for _ in xrange(depth)]
 		
 		self.tileTypes = []
-		tiledata = data.tiles.getTiles()
+		tiledata = sim.data.tiles.getTiles()
 		for tiledatumn in xrange(len(tiledata)):
 			tiledatum = tiledata[tiledatumn]
 			tileType = TileType(tiledatum.attrs, id)
 			self.tileTypes.append(tileType)
 		self.tileTypes = TileTypes(self.tileTypes)
+		
+		self.entities = []
 	
 	def gen(self):
 		# This is an alpha gen, with no texture whatsoever
@@ -66,3 +68,6 @@ class World():
 			for y in xrange(self.height):
 				for z in xrange(self.depth-1):
 					self.world[x][y][z+1] = Tile(x, y, z, self.tileTypes.stone, self)
+	
+	def randpos(self):
+		return [random.randint(0, self.width), random.randint(0, self.height), random.randint(0, self.depth)]

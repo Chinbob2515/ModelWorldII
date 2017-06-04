@@ -1,29 +1,56 @@
 import util.message as message
 import users.main
+from sim import entity
+from random import randint
 
-def __main__(socket):
+__LOG = True
+
+def Log(string, overide=False):
+	if __LOG or overide: print string
+
+def __main__(socket, sim):
 	message.setSocket(socket)
 	users.main.init()
 	username = ""
+	id = ""
 	
 	messageLogin = message.get()
 	if messageLogin["code"] == 10: # Login
 		while username == "":
-			#print "User trying to login with details:", messageLogin
-			#print "Matching password should be:", users.main.getUser(messageLogin["param"][0])
-			if users.main.getUser(messageLogin["param"][0]) == messageLogin["param"][1]:
+			Log("Person trying to login with username "+ messageLogin["param"][0]+ ", and password "+ messageLogin["param"][1])
+			if users.main.getUser(messageLogin["param"][0]) == messageLogin["param"][1]: # Correct Login
 				message.send(10, 1)
 				username = messageLogin["param"][0]
-			else:
+				id = int(users.main.getUserId(username))
+			else: # Try again
+				Log("Wrong password")
 				message.send(10, -1)
 				messageLogin = message.get()
 	elif messageLogin["code"] == 11: # Register
 		while username == "":
+			Log("Person trying to register with username "+ messageLogin["param"][0])
 			if not users.main.getUser(messageLogin["param"][0]):
+				username = messageLogin["param"][0]
 				password = users.main.addUser(messageLogin["param"][0])
+				id = int(users.main.getUserId(username))
 				message.send(11, 1, [password])
+				sim.addUser(id)
 			else:
+				Log("Username already taken")
 				message.send(11, -1)
 	else:
 		print "Wrong code at login, aborting thread management..."
 		return False
+	
+	print "User", id, username, "logged in"
+	
+	while 1:
+		messageIn = message.get()
+		code = messageIn["code"]
+		if code == 20: # Switch active dwarf
+			pass
+		elif code == 21: # Order dwarf
+			pass
+		elif code == 01: # Exit
+			print "User", id, username, "exiting"
+			return True

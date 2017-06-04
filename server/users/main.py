@@ -38,6 +38,11 @@ def getUser(username):
 	for username in cursor: return username[0]
 	return None
 
+def getUserId(username):
+	cursor.execute("SELECT id FROM users WHERE username='%s';" % (username,))
+	for username in cursor: return username[0]
+	return None
+
 def generatePassword():
 	words = []
 	with open(__path__+"sortedwords.txt", "r") as file: words = file.read().strip().split("\n")
