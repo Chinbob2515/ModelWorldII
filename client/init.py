@@ -49,16 +49,28 @@ while RUNNING:
 		userInput = userInput.strip("\\").split(" ")
 		command = userInput[0]
 		if command == "switch":
-			print "Attempting to switch dwarf..."
+			print "Attempting to switch dwarf ID %s..." % (userInput[1],)
 			message.send(20, 0, userInput[1:])
+			success = message.get()["subcode"]
+			if success == 1:
+				print "Dwarf switched."
+			elif success == -1:
+				print "ID is wrong somehow."
+		elif command == "list":
+			print "Listing dwarves..."
+			message.send(22, 0)
+			response = message.get()
+			dwarves = [eval(i) for i in response["param"]]
+			for dwarf in dwarves:
+				print "ID: %s ; Name : %s ;" % dwarf[0:2]
 		elif command == "exit":
 			print "Exiting..."
-			message.send(01, 0, [])
+			message.send(01, 0)
 			RUNNING = False
 	else: # User talking to active dwarf
 		message.send(21, 0, [userInput])
 		response = message.get()
-		print response["params"][0]
+		print response["param"][0]
 
 print "The game ends here."
 

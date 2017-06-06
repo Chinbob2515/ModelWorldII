@@ -5,11 +5,18 @@ from util.sockets import ServerSocket
 import threading, os, handler
 from sim.main import Sim
 
+saveFile = "saveFile.txt"
+
 def __main__():
 	socket = ServerSocket()
 	
 	sim = Sim()
-	sim.new(4,4,4)
+	if os.path.isfile(saveFile):
+		print "Loading save..."
+		sim.load(saveFile)
+	else:
+		print "Generating new simulation..."
+		sim.new(4,4,4)
 	
 	try:
 		while 1:
@@ -20,7 +27,8 @@ def __main__():
 		print str(e)
 	finally:
 		print "\n"
-		print "Brutually murdering everything..."
+		print "Brutually murdering everything... (and perhaps doing some saving)"
+		sim.save(saveFile)
 		os._exit(1)
 
 __main__()

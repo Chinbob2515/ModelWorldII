@@ -14,11 +14,13 @@ def __main__(socket, sim):
 	username = ""
 	id = ""
 	
+	activeDwarf = None
+	
 	messageLogin = message.get()
 	if messageLogin["code"] == 10: # Login
 		while username == "":
 			Log("Person trying to login with username "+ messageLogin["param"][0]+ ", and password "+ messageLogin["param"][1])
-			if users.main.getUser(messageLogin["param"][0]) == messageLogin["param"][1]: # Correct Login
+			if (not not messageLogin["param"][1].strip()) and users.main.getUser(messageLogin["param"][0]) == messageLogin["param"][1]: # Correct Login
 				message.send(10, 1)
 				username = messageLogin["param"][0]
 				id = int(users.main.getUserId(username))
@@ -38,19 +40,31 @@ def __main__(socket, sim):
 			else:
 				Log("Username already taken")
 				message.send(11, -1)
+				messageLogin = message.get()
 	else:
 		print "Wrong code at login, aborting thread management..."
 		return False
 	
-	print "User", id, username, "logged in"
+	Log("User "+ str(id) +" "+ username+ " logged in")
 	
 	while 1:
 		messageIn = message.get()
 		code = messageIn["code"]
 		if code == 20: # Switch active dwarf
-			pass
+			dwarf = users.main.listEntities(id=int(messageIn["param"][0]), owner=id)
+			if len(dwarf) != 1:
+				message.send(20, -1)
+			else:
+				message.send(20, 1)
+			activeDwarf = sim.getEntity(dwarf[0][0])
 		elif code == 21: # Order dwarf
-			pass
+			if not activeDwarf:
+				message.send(21, -1)
+				continue
+			message.send(21, 1, [activeDwarf.user_speak(messageIn["param"][0])])
+		elif code == 22: # List dwarves
+			dwarves = users.main.listEntities(owner=id)
+			message.send(22, 1, dwarves)
 		elif code == 01: # Exit
-			print "User", id, username, "exiting"
+			Log("User "+ str(id) +" "+ username+ " exiting")
 			return True

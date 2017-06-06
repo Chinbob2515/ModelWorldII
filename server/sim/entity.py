@@ -1,5 +1,6 @@
 from types import MethodType
 from random import randint
+import users.main
 
 properties = {
 	"Dwarf": {
@@ -21,15 +22,20 @@ def _highestRolls(numRolls, numSelect):
 
 class Entity:
 	
-	def __init__(self, pos, owner):
-		name = self.__class__.__name__
-		self._maxHealth = properties[name]["maxHealth"]
+	_customFunctions = {}
+	
+	def __init__(self, pos, owner, name="Bob"):
+		race = self.__class__.__name__
+		self._maxHealth = properties[race]["maxHealth"]
 		self._health = self._maxHealth
 		if len(pos) != 3:
 			raise AttributeError("wrong num of coordinates")
 		self._pos = pos
 		self._stats = [i+_highestRolls(4, 3) for i in _baseStats]
+		self._name = name
 		self.owner = owner
+		users.main.addEntity(owner, race, "", name)
+		self._id = users.main.getLastEntityId()
 	
 	@property
 	def health(self):
@@ -65,6 +71,6 @@ class Dwarf(Entity):
 		text = text.split(" ")
 		command = text[0]
 		if command.lower() == "d":
-			print "I am blind"
+			return "I am blind"
 		if command.lower() == "s":
-			print "My stats are:", self._stats
+			return "My stats are: %s" % (self._stats,)

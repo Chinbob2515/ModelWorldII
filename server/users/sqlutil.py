@@ -18,7 +18,7 @@ def connectToDatabase(cnx, cursor, dbName):
 
 def createTableIfNotExists(cursor, schema):
 	try:
-		cursor.execute(schema, multi=True)
+		for i in cursor.execute(schema, multi=True): pass
 	except mysql.connector.Error as err:
 		print "oops error"
 		if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:

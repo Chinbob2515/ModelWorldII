@@ -20,6 +20,8 @@ class TileTypes():
 		self.types = types
 	
 	def __getattr__(self, name):
+		if name == "types":
+			raise AttributeError("No such value.")
 		value = self.name(name)
 		if value == None:
 			raise AttributeError("No such value")
