@@ -102,3 +102,6 @@ ENV/
 
 # Secret files (e.g. passwords)
 *.secret
+
+# Savefiles
+*.MWIIsave

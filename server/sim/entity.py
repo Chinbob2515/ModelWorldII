@@ -31,7 +31,7 @@ class Entity:
 		if len(pos) != 3:
 			raise AttributeError("wrong num of coordinates")
 		self._pos = pos
-		self._stats = [i+_highestRolls(4, 3) for i in _baseStats]
+		self._stats = [_highestRolls(4, 3) for _ in _baseStats]
 		self._name = name
 		self.owner = owner
 		users.main.addEntity(owner, race, "", name)
@@ -70,7 +70,10 @@ class Dwarf(Entity):
 	def user_speak(self, text):
 		text = text.split(" ")
 		command = text[0]
+		answer = "I don't understand."
 		if command.lower() == "d":
-			return "I am blind"
+			answer = "I am blind"
 		if command.lower() == "s":
-			return "My stats are: %s" % (self._stats,)
+			answer =  "My stats are: %s" % (self._stats,)
+			print "My stats are: %s" % (self._stats,)
+		return answer

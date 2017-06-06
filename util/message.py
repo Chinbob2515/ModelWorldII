@@ -7,7 +7,7 @@ def setSocket(sock):
 	socket = sock
 
 def encode(code, subcode, param):
-	param = [str(i) for i in param]
+	param = [str(i).replace(":", "\c").replace(";", "\s") for i in param]
 	return str(code)+":"+str(subcode)+":"+';'.join(param)
 
 def decode(message):
@@ -15,7 +15,7 @@ def decode(message):
 	parts = message.split(":")
 	info["code"] = int(parts[0])
 	info["subcode"] = int(parts[1])
-	info["param"] = parts[2].split(";")
+	info["param"] = [i.replace("\c", ":").replace("\s", ";") for i in parts[2].split(";")]
 	return info
 
 def get():

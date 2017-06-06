@@ -5,7 +5,7 @@ from util.sockets import ServerSocket
 import threading, os, handler
 from sim.main import Sim
 
-saveFile = "saveFile.txt"
+saveFile = "saveFile.MWIIsave"
 
 def __main__():
 	socket = ServerSocket()

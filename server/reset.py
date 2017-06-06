@@ -4,4 +4,4 @@ users.main.reset()
 
 import os
 
-os.remove("saveFile.txt")
+os.remove("saveFile.MWIIsave")
