@@ -54,6 +54,7 @@ def __main__(socket, sim):
 			dwarf = users.main.listEntities(id=int(messageIn["param"][0]), owner=id)
 			if len(dwarf) != 1:
 				message.send(20, -1)
+				continue
 			else:
 				message.send(20, 1)
 			activeDwarf = sim.getEntity(dwarf[0][0])
@@ -61,7 +62,7 @@ def __main__(socket, sim):
 			if not activeDwarf:
 				message.send(21, -1)
 				continue
-			message.send(21, 1, [activeDwarf.user_speak(messageIn["param"][0])])
+			message.send(21, 1, [activeDwarf._speak(messageIn["param"][0])])
 		elif code == 22: # List dwarves
 			dwarves = users.main.listEntities(owner=id)
 			message.send(22, 1, dwarves)

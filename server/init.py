@@ -17,6 +17,7 @@ def __main__():
 	else:
 		print "Generating new simulation..."
 		sim.new(4,4,4)
+	sim.start()
 	
 	try:
 		while 1:

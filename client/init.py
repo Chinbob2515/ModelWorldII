@@ -70,7 +70,10 @@ while RUNNING:
 	else: # User talking to active dwarf
 		message.send(21, 0, [userInput])
 		response = message.get()
-		print response["param"][0]
+		if response["subcode"] == -1:
+			print "No active dwarf, try using \switch [dwarf ID]."
+		else:
+			print response["param"][0]
 
 print "The game ends here."
 

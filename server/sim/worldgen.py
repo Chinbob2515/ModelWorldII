@@ -13,6 +13,9 @@ class TileType():
 				pass
 		self.__dict__ = attrs
 		self.id = id
+	
+	def __str__(self):
+		return "Type[%s]" % self.__dict__
 
 class TileTypes():
 	
@@ -35,12 +38,22 @@ class TileTypes():
 
 class Tile:
 	
+	OPIUM_REGEN_RATE = 1.0/10
+	
 	def __init__(self, x, y, z, type, world):
 		self.world = world
 		self.x = x
 		self.y = y
 		self.z = z
 		self.type = type
+		self.opium = type.maxopium
+	
+	def update(self):
+		if self.opium != self.type.maxopium:
+			self.opium += self.type.maxopium * OPIUM_REGEN_RATE
+	
+	def __str__(self):
+		return "Tile[x: %s; y: %s; z: %s; opium: %s; type: %s]" % (self.x, self.y, self.z, self.opium, str(self.type))
 
 class World():
 	
@@ -54,7 +67,7 @@ class World():
 		tiledata = sim.data.tiles.getTiles()
 		for tiledatumn in xrange(len(tiledata)):
 			tiledatum = tiledata[tiledatumn]
-			tileType = TileType(tiledatum.attrs, id)
+			tileType = TileType(tiledatum.attrs, tiledatumn)
 			self.tileTypes.append(tileType)
 		self.tileTypes = TileTypes(self.tileTypes)
 		
@@ -71,5 +84,13 @@ class World():
 				for z in xrange(self.depth-1):
 					self.world[x][y][z+1] = Tile(x, y, z, self.tileTypes.stone, self)
 	
+	def update(self):
+		for y in self.world:
+			for z in y:
+				for tile in z:
+					tile.update()
+		for entity in self.entities:
+			entity._update()
+	
 	def randpos(self):
-		return [random.randint(0, self.width), random.randint(0, self.height), random.randint(0, self.depth)]
+		return [random.randint(0, self.width-1), random.randint(0, self.height-1), random.randint(0, self.depth-1)]

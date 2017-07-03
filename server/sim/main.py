@@ -1,6 +1,8 @@
-import worldgen, entity, pickle
+import worldgen, entity, pickle, threading, time
 
 # Maybe consider changing pickle to cpickle, and choosing the byte stream mode, to increase save/load speed?
+
+CYCLE_LENGTH = 0.5 # Length in seconds of game cycle
 
 class Sim():
 	
@@ -9,6 +11,7 @@ class Sim():
 	
 	def new(self, width, height, depth):
 		self.world = worldgen.World(width, height, depth)
+		self.world.gen()
 	
 	def load(self, fileName):
 		tmp_dict = {}
@@ -20,11 +23,20 @@ class Sim():
 		with open(fileName, "w") as file:
 			pickle.dump(self.__dict__, file)
 	
+	def start(self):
+		t = threading.Thread(target=self.run)
+		t.start()
+	
+	def run(self):
+		while True:
+			time.sleep(CYCLE_LENGTH)
+			self.update()
+	
 	def update(self):
-		pass
+		self.world.update()
 	
 	def addUser(self, id):
-		self.world.entities.append(entity.Dwarf(self.world.randpos(), id))
+		self.world.entities.append(entity.Dwarf(self, self.world.randpos(), id))
 	
 	def getEntity(self, id):
 		for entity in self.world.entities:
